@@ -25,7 +25,21 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'npm'
+#        cache: 'npm'
+    - name: Get NPM cache directory
+      id: npm-cache
+      run: |
+        echo "::set-output name=dir::$(npm config get cache)" 
+    - name: Cache NPM
+      uses: actions/cache@v4.2.0
+      with:
+        # A list of files, directories, and wildcard patterns to cache and restore
+        path: ${{ steps.npm-cache.outputs.dir }}
+        # An explicit key for restoring and saving the cache
+        key: node-${{ hashFiles('**/package-lock.json') }}
+        # An ordered multiline string listing the prefix-matched keys, that are used for restoring stale cache if no cache hit occurred for key. Note `cache-hit` returns false in this case.
+        restore-keys: |
+          node-
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test

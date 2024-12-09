@@ -4,4 +4,9 @@ on:
         branches: 
             - main
 
-            
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node-version: [16.0,17.0,18.x,]
